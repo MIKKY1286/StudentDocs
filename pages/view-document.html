@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View & Download Documents</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">Your Documents</h1>
+    <button id="logoutBtn" class="text-red-600 hover:underline">Logout</button>
+  </header>
+
+  <main class="max-w-4xl mx-auto p-6">
+    <h2 class="text-xl font-semibold mb-4">Documents You Can View/Download</h2>
+
+    <div id="documentList" class="space-y-4 bg-white p-4 rounded shadow">
+      <!-- Document list will appear here -->
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
+    authDomain: "studentdoc-537b9.firebaseapp.com",
+    projectId: "studentdoc-537b9",
+    storageBucket: "studentdoc-537b9.firebasestorage.app",
+    messagingSenderId: "802279184125",
+    appId: "1:802279184125:web:3ca3364c78597bb2951094",
+    measurementId: "G-9XPGW51NTH"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const documentList = document.getElementById("documentList");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const querySnapshot = await getDocs(collection(db, "documents"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        if (data.uid === user.uid) {
+          const documentItem = document.createElement("div");
+          documentItem.className = "border p-4 rounded flex justify-between items-center";
+          
+          documentItem.innerHTML = `
+            <div>
+              <p class="font-medium">${data.fileName}</p>
+              <p class="text-gray-600 text-sm">Uploaded: ${new Date(data.uploadedAt).toLocaleString()}</p>
+              <p class="text-gray-600 text-sm">Downloads: ${data.downloadCount}</p>
+            </div>
+            <a href="${data.url}" target="_blank"
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Download</a>
+          `;
+
+          // Increment download count when document is downloaded
+          documentItem.querySelector("a").addEventListener("click", async (e) => {
+            const docId = docSnap.id;
+            await updateDoc(doc(db, "documents", docId), {
+              downloadCount: increment(1)
+            });
+          });
+
+          documentList.appendChild(documentItem);
+        }
+      });
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "/login.html";
+    });
+  </script>
+
+</body>
+</html>

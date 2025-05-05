@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 - Page Not Found</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .animate-bounce-up {
+      animation: bounceUp 1.5s ease-in-out infinite;
+    }
+
+    @keyframes bounceUp {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <div class="flex items-center justify-center min-h-screen p-6">
+    <div class="text-center bg-white rounded-lg shadow-xl p-8 w-full max-w-lg">
+      <img src="https://via.placeholder.com/200" alt="404 Illustration" class="mx-auto mb-6 animate-bounce-up" />
+      <h1 class="text-6xl font-bold text-red-600">404</h1>
+      <p class="mt-4 text-xl font-semibold text-gray-800">Oops! Page not found.</p>
+      <p class="mt-2 text-gray-600">We couldn't find the page you're looking for.</p>
+      <a href="/" class="mt-6 inline-block px-6 py-3 text-lg font-medium text-white bg-blue-600 rounded-full hover:bg-blue-700 transform hover:scale-105 transition-all">
+        Go Back to Home
+      </a>
+      <p class="mt-4 text-gray-500 text-sm">Or <a href="/" class="text-blue-600 hover:text-blue-800">click here</a> to return to the main page.</p>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+  <div class="flex items-center justify-center min-h-screen p-6">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+      <h1 class="text-3xl font-bold text-blue-600 mb-6">Admin Login</h1>
+
+      <form id="adminLoginForm" class="space-y-6">
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-gray-700">Email</label>
+          <input type="email" id="email" placeholder="admin@example.com" class="w-full p-2 border rounded" required />
+        </div>
+
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-gray-700">Password</label>
+          <input type="password" id="password" placeholder="********" class="w-full p-2 border rounded" required />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
+          Login
+        </button>
+      </form>
+
+      <p class="mt-4 text-center text-gray-600">Not an Admin? <a href="./login.html" class="text-blue-600 hover:text-blue-800">Click here</a></p>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
+      authDomain: "studentdoc-537b9.firebaseapp.com",
+      projectId: "studentdoc-537b9",
+      storageBucket: "studentdoc-537b9.firebasestorage.app",
+      messagingSenderId: "802279184125",
+      appId: "1:802279184125:web:3ca3364c78597bb2951094",
+      measurementId: "G-9XPGW51NTH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const adminLoginForm = document.getElementById("adminLoginForm");
+
+    // Handle form submission for login
+    adminLoginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        // Sign in with Firebase Authentication
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Fetch user data from Firestore to check if they are an admin
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          if (userData.isAdmin) {
+            // If the user is an admin, redirect to the admin dashboard
+            window.location.href = "./admin-dashboard.html";
+          } else {
+            // If not an admin, log them out and show an error
+            await auth.signOut();
+            alert("You do not have admin access!");
+          }
+        } else {
+          alert("No such user document!");
+        }
+      } catch (error) {
+        alert("Error logging in: " + error.message);
+      }
+    });
+
+    // Avoid auto-redirect for logged-in users until the form is submitted
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Check if user is already logged in, and prevent redirecting automatically
+        const isLoginFormVisible = document.getElementById("adminLoginForm");
+        if (isLoginFormVisible) {
+          window.location.href = "./admin-dashboard.html"; // Redirect if already logged in
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, doc, getDoc, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      getAuth, signOut, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+     apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
+     authDomain: "studentdoc-537b9.firebaseapp.com",
+     projectId: "studentdoc-537b9",
+     storageBucket: "studentdoc-537b9.firebasestorage.app",
+     messagingSenderId: "802279184125",
+     appId: "1:802279184125:web:3ca3364c78597bb2951094",
+     measurementId: "G-9XPGW51NTH"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const adminName = document.getElementById("adminName");
+    const studentTableBody = document.querySelector("tbody");
+    const totalStudents = document.getElementById("totalStudents");
+    const documentList = document.getElementById("documentList");
+    const totalDocuments = document.getElementById("totalDocuments");
+    const totalReports = document.getElementById("totalReports");
+
+    // Get the admin name and display it
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          if (userData.isAdmin) {
+            // Display admin's name
+            document.getElementById("nameDisplay").innerText = userData.name;
+          } else {
+            alert("You do not have admin access!");
+            signOut(auth);
+            window.location.href = "./admin-login.html"; // Redirect to login page
+          }
+        } else {
+          alert("No such user document!");
+        }
+      } else {
+        window.location.href = "./admin-login.html"; // Redirect if not logged in
+      }
+    });
+
+
+    // Fetch Students
+    async function fetchStudents() {
+      const querySnapshot = await getDocs(collection(db, "students"));
+      totalStudents.textContent = querySnapshot.size;
+      studentTableBody.innerHTML = ""; // Clear existing
+
+      querySnapshot.forEach(doc => {
+        const student = doc.data();
+        const row = `
+          <tr class="border-b">
+            <td class="p-2">${student.fullName}</td>
+            <td class="p-2">${student.matricNumber}</td>
+            <td class="p-2">${student.email}</td>
+            <td class="p-2">${student.phone}</td>
+            <td class="p-2">
+              <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" onclick="removeStudent('${doc.id}')">Remove</button>
+            </td>
+          </tr>
+        `;
+        studentTableBody.innerHTML += row;
+      });
+    }
+
+    // Fetch Documents
+    async function fetchDocuments() {
+      const querySnapshot = await getDocs(collection(db, "documents"));
+      totalDocuments.textContent = querySnapshot.size;
+      documentList.innerHTML = ""; // Clear existing data
+      querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const listItem = `<li>${data.fileName} - uploaded by ${data.uploadedBy}</li>`;
+        documentList.innerHTML += listItem;
+      });
+    }
+
+    // Fetch Reports
+    async function fetchReports() {
+      const querySnapshot = await getDocs(collection(db, "reports"));
+      totalReports.textContent = querySnapshot.size;
+      // Here, you can also add logic to display detailed reports if needed
+    }
+
+    // Remove Student
+    async function removeStudent(studentId) {
+      const studentRef = doc(db, "students", studentId);
+      await deleteDoc(studentRef);
+      fetchStudents(); // Re-fetch students after removal
+    }
+
+    // Logout
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+        signOut(auth).then(() => {
+          alert("Logged out");
+          window.location.href = "login.html";
+        });
+      });
+
+      // Load data
+      fetchStudents();
+      fetchDocuments();
+      fetchReports();
+    });
+
+    // Toggle sidebar visibility
+    const menuToggle = document.getElementById("menuToggle");
+    const sidebar = document.getElementById("sidebar");
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("hidden");
+    });
+  </script>
+</head>
+<body class="flex flex-col md:flex-row h-screen bg-gray-100 text-gray-800">
+
+  <!-- Mobile Header -->
+  <header class="md:hidden flex justify-between items-center p-4 bg-gray-800 text-white">
+    <h2 class="text-xl font-bold">Admin Panel</h2>
+    <button id="menuToggle" class="text-white text-2xl focus:outline-none">☰</button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-full md:w-64 bg-gray-800 text-white p-6 md:flex flex-col hidden md:block">
+    <h2 class="text-2xl font-bold mb-10">Admin Panel</h2>
+    <nav class="flex flex-col space-y-4">
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Dashboard</a>
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Manage Students</a>
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Documents</a>
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Reports</a>
+      <a href="#" class="hover:bg-gray-700 p-2 rounded">Settings</a>
+      <button id="adminLogoutBtn" class="mt-10 bg-red-500 hover:bg-red-600 p-2 rounded">Logout</button>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 overflow-y-auto">
+   <!-- Welcome Header -->
+<div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+    <div>
+      <h1 class="text-3xl font-bold">Welcome, <span id="nameDisplay">Admin</span> 👋</h1>
+      <p class="text-gray-600">Overview of platform activity and student documents.</p>
+    </div>
+    <img src="https://via.placeholder.com/60" alt="Admin Avatar" class="rounded-full w-16 h-16 border-2 border-gray-500">
+  </div>
+  
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div class="bg-white p-5 rounded-lg shadow text-center">
+        <h2 class="text-lg font-semibold">Total Students</h2>
+        <p class="text-3xl font-bold text-blue-700" id="totalStudents">0</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg shadow text-center">
+        <h2 class="text-lg font-semibold">Uploaded Documents</h2>
+        <p class="text-3xl font-bold text-green-600" id="totalDocuments">0</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg shadow text-center">
+        <h2 class="text-lg font-semibold">Reports</h2>
+        <p class="text-xl text-yellow-600" id="totalReports">0 pending</p>
+      </div>
+    </div>
+
+    <!-- Student Table -->
+    <div class="bg-white p-6 rounded shadow mb-10 overflow-auto">
+      <h2 class="text-xl font-semibold mb-4">Registered Students</h2>
+      <table class="w-full text-left border">
+        <thead>
+          <tr class="bg-gray-200">
+            <th class="p-2">Full Name</th>
+            <th class="p-2">Matric No.</th>
+            <th class="p-2">Email</th>
+            <th class="p-2">Phone</th>
+            <th class="p-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Dynamically added rows from Firebase -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Uploaded Documents -->
+    <div class="bg-white p-6 rounded shadow mb-10">
+      <h2 class="text-xl font-semibold mb-4">Recent Documents</h2>
+      <ul class="list-disc list-inside text-sm text-gray-700 space-y-2" id="documentList">
+        <!-- Dynamically added documents from Firebase -->
+      </ul>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="bg-white p-6 rounded shadow mb-10">
+      <h2 class="text-xl font-semibold mb-4">Recent Admin Activity</h2>
+      <ul class="list-disc list-inside text-sm text-gray-700 space-y-2" id="adminActivity">
+        <li>Logged in at 9:00 AM</li>
+        <li>Reviewed submitted project files</li>
+        <!-- More logs -->
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-sm text-gray-500">
+      &copy; 2025 Admin Dashboard - StudentDocs
+    </footer>
+  </main>
+
+</body>
+</html>
