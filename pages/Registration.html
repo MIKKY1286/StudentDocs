@@ -38,47 +38,42 @@
 
   <!-- Firebase SDK -->
   <script type="module">
-    // Import the Firebase modules from CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // Your Firebase configuration
+    // Firebase config
     const firebaseConfig = {
-    apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
-    authDomain: "studentdoc-537b9.firebaseapp.com",
-    projectId: "studentdoc-537b9",
-    storageBucket: "studentdoc-537b9.firebasestorage.app",
-    messagingSenderId: "802279184125",
-    appId: "1:802279184125:web:3ca3364c78597bb2951094",
-    measurementId: "G-9XPGW51NTH"
-  };
+      apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
+      authDomain: "studentdoc-537b9.firebaseapp.com",
+      projectId: "studentdoc-537b9",
+      storageBucket: "studentdoc-537b9.firebasestorage.app",
+      messagingSenderId: "802279184125",
+      appId: "1:802279184125:web:3ca3364c78597bb2951094",
+      measurementId: "G-9XPGW51NTH"
+    };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Form submit logic
     const registerForm = document.getElementById('registerForm');
     registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const fullName = document.getElementById('fullName').value;
-      const matricNumber = document.getElementById('matricNumber').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
+      const fullName = document.getElementById('fullName').value.trim();
+      const matricNumber = document.getElementById('matricNo').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value;
 
       try {
-        // Create user with Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Save extra user info in Firestore
         await setDoc(doc(db, "students", user.uid), {
           fullName,
-          matricNumber: matricNo,
+          matricNumber,
           email,
           phone,
           createdAt: new Date().toISOString()
@@ -86,7 +81,7 @@
 
         alert("Registration successful!");
         registerForm.reset();
-        window.location.href = "./dashboard.html"; // Redirect to dashboard after registration
+        window.location.href = "./dashboard.html";
       } catch (error) {
         console.error("Registration Error:", error.message);
         alert("Error: " + error.message);
