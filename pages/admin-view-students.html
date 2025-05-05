@@ -72,7 +72,7 @@
 
         studentItem.innerHTML = `
           <td class="px-6 py-3">${data.fullName}</td>
-          <td class="px-6 py-3">${data.matricNo}</td>
+          <td class="px-6 py-3">${data.matricNumber}</td>
           <td class="px-6 py-3">${data.email}</td>
           <td class="px-6 py-3">${data.phone}</td>
           <td class="px-6 py-3">
@@ -99,7 +99,7 @@
 
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
-      window.location.href = "/login.html";
+      window.location.href = "./login.html";
     });
   </script>
 

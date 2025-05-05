@@ -80,7 +80,7 @@
       if (docSnap.exists()) {
         const data = docSnap.data();
         document.getElementById("fullName").value = data.fullName || "";
-        document.getElementById("matricNo").value = data.matricNo || "";
+        document.getElementById("matricNo").value = data.matricNumber || "";
         document.getElementById("email").value = data.email || "";
         document.getElementById("phone").value = data.phone || "";
       }
@@ -91,7 +91,7 @@
       e.preventDefault();
 
       const fullName = document.getElementById("fullName").value;
-      const matricNo = document.getElementById("matricNo").value;
+      const matricNumber = document.getElementById("matricNo").value;
       const email = document.getElementById("email").value;
       const phone = document.getElementById("phone").value;
 
@@ -99,7 +99,7 @@
 
       await updateDoc(userRef, {
         fullName,
-        matricNo,
+        matricNumber,
         email,
         phone
       });

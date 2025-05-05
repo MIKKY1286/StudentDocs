@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">Admin Dashboard</h1>
+    <button id="logoutBtn" class="text-red-600 hover:underline">Logout</button>
+  </header>
+
+  <main class="max-w-3xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-semibold mb-4">Welcome, Admin</h2>
+
+    <div id="adminInfo" class="space-y-3">
+      <!-- Admin info will appear here -->
+    </div>
+
+    <div class="mt-6 space-x-4">
+      <a href="./view-document.html" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Manage Documents</a>
+      <a href="/manage-users.html" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Manage Users</a>
+    </div>
+  </main>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
+      authDomain: "studentdoc-537b9.firebaseapp.com",
+      projectId: "studentdoc-537b9",
+      storageBucket: "studentdoc-537b9.appspot.com",
+      messagingSenderId: "802279184125",
+      appId: "1:802279184125:web:3ca3364c78597bb2951094",
+      measurementId: "G-9XPGW51NTH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const adminInfo = document.getElementById("adminInfo");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "./login.html";
+        return;
+      }
+
+      const userDoc = await getDoc(doc(db, "admins", user.uid));
+      if (!userDoc.exists()) {
+        alert("Access denied. Not an admin.");
+        await signOut(auth);
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const data = userDoc.data();
+      adminInfo.innerHTML = `
+        <p><strong>Name:</strong> ${data.name || "Not set"}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Role:</strong> ${data.role || "admin"}</p>
+      `;
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "/login.html";
+    });
+  </script>
+</body>
+</html>
