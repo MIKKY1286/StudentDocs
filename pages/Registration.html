@@ -78,7 +78,7 @@
         // Save extra user info in Firestore
         await setDoc(doc(db, "students", user.uid), {
           fullName,
-          matricNo,
+          matricNumber: matricNo,
           email,
           phone,
           createdAt: new Date().toISOString()
