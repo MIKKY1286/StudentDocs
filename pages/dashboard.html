@@ -205,7 +205,7 @@ onAuthStateChanged(auth, async (user) => {
   if (studentSnap.exists()) {
     const data = studentSnap.data();
     studentName.textContent = data.fullName || "";
-    studentMatric.textContent = data.matricNo || "";
+    studentMatric.textContent = data.matricNumber || "";
     studentEmail.textContent = data.email || "";
     studentPhone.textContent = data.phone || "";
     studentNameHeader.textContent = data.fullName?.split(" ")[0] || "Student";
