@@ -165,7 +165,7 @@
       if (studentSnap.exists()) {
         const studentData = studentSnap.data();
         studentName.textContent = studentData.fullName || "";
-        studentMatric.textContent = studentData.matricNo || "";
+        studentMatric.textContent = studentData.matricNumber || "";
         studentEmail.textContent = studentData.email || "";
         studentPhone.textContent = studentData.phone || "";
         studentNameHeader.textContent = studentData.fullName?.split(" ")[0] || "Student";

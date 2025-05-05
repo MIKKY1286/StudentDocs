@@ -106,11 +106,12 @@
     }
 
     // Remove Student
-    async function removeStudent(studentId) {
-      const studentRef = doc(db, "students", studentId);
-      await deleteDoc(studentRef);
-      fetchStudents(); // Re-fetch students after removal
+    window.removeStudent = async function (studentId) {
+     const studentRef = doc(db, "students", studentId);
+     await deleteDoc(studentRef);
+     fetchStudents(); // Re-fetch students after removal
     }
+
 
     // Logout
     document.addEventListener("DOMContentLoaded", () => {
