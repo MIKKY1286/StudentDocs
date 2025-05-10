@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin - Student List</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com   "></script>
 </head>
 <body class="bg-gray-100">
 
@@ -26,6 +26,8 @@
             <th class="p-3">Matric No</th>
             <th class="p-3">Email</th>
             <th class="p-3">Phone</th>
+            <!-- 🟩 New Department Column -->
+            <th class="p-3">Department</th>
           </tr>
         </thead>
         <tbody id="studentTable" class="divide-y divide-gray-200"></tbody>
@@ -35,9 +37,9 @@
 
   <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js   ";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js   ";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js   ";
 
     const firebaseConfig = {
     apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
@@ -61,7 +63,7 @@
     onAuthStateChanged(auth, async (user) => {
       if (!user || user.email !== adminEmail) {
         alert("Access Denied");
-        window.location.href = "/login.html";
+        window.location.href = "./login.html";
         return;
       }
 
@@ -75,6 +77,8 @@
           <td class="p-3">${student.matricNo}</td>
           <td class="p-3">${student.email}</td>
           <td class="p-3">${student.phone}</td>
+          <!-- 🟩 Display Department Field -->
+          <td class="p-3">${student.department || 'N/A'}</td>
         `;
 
         studentTable.appendChild(row);
@@ -91,7 +95,7 @@
 
     logoutBtn.addEventListener("click", async () => {
       await signOut(auth);
-      window.location.href = "/login.html";
+      window.location.href = "./login.html";
     });
   </script>
 

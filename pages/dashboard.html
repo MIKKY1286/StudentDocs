@@ -57,15 +57,17 @@
     </div>
   
     <!-- Student Info -->
-    <div class="bg-white p-6 rounded shadow mb-8">
-      <h2 class="text-xl font-semibold mb-4">Student Information</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <p><strong>Full Name:</strong> <span id="studentName"></span></p>
-        <p><strong>Matric No:</strong> <span id="studentMatric"></span></p>
-        <p><strong>Email:</strong> <span id="studentEmail"></span></p>
-        <p><strong>Phone:</strong> <span id="studentPhone"></span></p>
-      </div>
-    </div>
+<div class="bg-white p-6 rounded shadow mb-8">
+  <h2 class="text-xl font-semibold mb-4">Student Information</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <p><strong>Full Name:</strong> <span id="studentName"></span></p>
+    <p><strong>Matric No:</strong> <span id="studentMatric"></span></p>
+    <p><strong>Email:</strong> <span id="studentEmail"></span></p>
+    <p><strong>Phone:</strong> <span id="studentPhone"></span></p>
+    <!-- 🟩 New Department Field -->
+    <p><strong>Department:</strong> <span id="studentDepartment"></span></p>
+  </div>
+</div>
   
     <!-- Upload Document -->
 <div class="bg-white p-6 rounded shadow mb-8">
@@ -143,13 +145,14 @@
     const studentMatric = document.getElementById("studentMatric");
     const studentEmail = document.getElementById("studentEmail");
     const studentPhone = document.getElementById("studentPhone");
+    const studentDepartment = document.getElementById("studentDepartment");
     const studentNameHeader = document.getElementById("studentNameHeader");
     const documentList = document.getElementById("documentList");
     const logoutBtn = document.getElementById("logoutBtn");
 
     logoutBtn.addEventListener("click", () => {
       signOut(auth).then(() => {
-        window.location.href = "login.html";
+        window.location.href = "../index.html";
       });
     });
 
@@ -168,6 +171,8 @@
         studentMatric.textContent = studentData.matricNumber || "";
         studentEmail.textContent = studentData.email || "";
         studentPhone.textContent = studentData.phone || "";
+        // 🟩 Display department if available
+        studentDepartment.textContent = studentData.department || "N/A";
         studentNameHeader.textContent = studentData.fullName?.split(" ")[0] || "Student";
       } else {
         alert("Student profile not found.");

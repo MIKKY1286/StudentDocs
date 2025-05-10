@@ -64,27 +64,29 @@
 
 
     // Fetch Students
-    async function fetchStudents() {
-      const querySnapshot = await getDocs(collection(db, "students"));
-      totalStudents.textContent = querySnapshot.size;
-      studentTableBody.innerHTML = ""; // Clear existing
+async function fetchStudents() {
+  const querySnapshot = await getDocs(collection(db, "students"));
+  totalStudents.textContent = querySnapshot.size;
+  studentTableBody.innerHTML = ""; // Clear existing
 
-      querySnapshot.forEach(doc => {
-        const student = doc.data();
-        const row = `
-          <tr class="border-b">
-            <td class="p-2">${student.fullName}</td>
-            <td class="p-2">${student["matricNumber"]}</td>
-            <td class="p-2">${student.email}</td>
-            <td class="p-2">${student.phone}</td>
-            <td class="p-2">
-              <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" onclick="removeStudent('${doc.id}')">Remove</button>
-            </td>
-          </tr>
-        `;
-        studentTableBody.innerHTML += row;
-      });
-    }
+  querySnapshot.forEach(doc => {
+    const student = doc.data();
+    const row = `
+      <tr class="border-b">
+        <td class="p-2">${student.fullName}</td>
+        <td class="p-2">${student.matricNumber}</td>
+        <td class="p-2">${student.email}</td>
+        <td class="p-2">${student.phone}</td>
+        <!-- Display Department if available -->
+        <td class="p-2">${student.department || 'N/A'}</td>
+        <td class="p-2">
+          <button class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" onclick="removeStudent('${doc.id}')">Remove</button>
+        </td>
+      </tr>
+    `;
+    studentTableBody.innerHTML += row;
+  });
+}
 
     // Fetch Documents
     async function fetchDocuments() {
@@ -186,24 +188,26 @@
       </div>
     </div>
 
-    <!-- Student Table -->
-    <div class="bg-white p-6 rounded shadow mb-10 overflow-auto">
-      <h2 class="text-xl font-semibold mb-4">Registered Students</h2>
-      <table class="w-full text-left border">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2">Full Name</th>
-            <th class="p-2">Matric No.</th>
-            <th class="p-2">Email</th>
-            <th class="p-2">Phone</th>
-            <th class="p-2">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Dynamically added rows from Firebase -->
-        </tbody>
-      </table>
-    </div>
+      <!-- Student Table -->
+<div class="bg-white p-6 rounded shadow mb-10 overflow-auto">
+  <h2 class="text-xl font-semibold mb-4">Registered Students</h2>
+  <table class="w-full text-left border">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="p-2">Full Name</th>
+        <th class="p-2">Matric No.</th>
+        <th class="p-2">Email</th>
+        <th class="p-2">Phone</th>
+        <!-- Added Department Column -->
+        <th class="p-2">Department</th>
+        <th class="p-2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Dynamically added rows from Firebase -->
+    </tbody>
+  </table>
+</div>
 
     <!-- Uploaded Documents -->
     <div class="bg-white p-6 rounded shadow mb-10">

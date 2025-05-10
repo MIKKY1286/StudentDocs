@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register - StudentDocs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com   "></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
@@ -16,6 +16,10 @@
              class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 
       <input type="text" id="matricNo" placeholder="Matric Number" required
+             class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+
+      <!-- 🟩 New Department Field -->
+      <input type="text" id="department" placeholder="Department" required
              class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"/>
 
       <input type="email" id="email" placeholder="Email" required
@@ -38,9 +42,9 @@
 
   <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js   ";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js   ";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js   ";
 
     // Firebase config
     const firebaseConfig = {
@@ -66,6 +70,8 @@
       const email = document.getElementById('email').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value;
+      // 🟩 Get department value
+      const department = document.getElementById('department').value.trim();
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -76,6 +82,7 @@
           matricNumber,
           email,
           phone,
+          department, // 🟩 Save department to Firestore
           createdAt: new Date().toISOString()
         });
 

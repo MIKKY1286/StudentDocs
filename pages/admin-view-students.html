@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Panel - View Students</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com   "></script>
 </head>
 <body class="bg-gray-100">
 
@@ -24,6 +24,8 @@
             <th class="px-6 py-3 text-left">Matric No</th>
             <th class="px-6 py-3 text-left">Email</th>
             <th class="px-6 py-3 text-left">Phone</th>
+            <!-- 🟩 New Department Column -->
+            <th class="px-6 py-3 text-left">Department</th>
             <th class="px-6 py-3 text-left">Actions</th>
           </tr>
         </thead>
@@ -36,9 +38,9 @@
 
   <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js   ";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js   ";
+    import { getFirestore, collection, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js   ";
 
     const firebaseConfig = {
     apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
@@ -58,8 +60,8 @@
     const logoutBtn = document.getElementById("logoutBtn");
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user || !user.email === "admin@admin.com") {
-        window.location.href = "/login.html";
+      if (!user || user.email !== "admin@admin.com") {
+        window.location.href = "./login.html";
         return;
       }
 
@@ -75,6 +77,8 @@
           <td class="px-6 py-3">${data.matricNumber}</td>
           <td class="px-6 py-3">${data.email}</td>
           <td class="px-6 py-3">${data.phone}</td>
+          <!-- 🟩 Display Department Field -->
+          <td class="px-6 py-3">${data.department || 'N/A'}</td>
           <td class="px-6 py-3">
             <button class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700" 
                     onclick="deleteStudent('${docSnap.id}')">

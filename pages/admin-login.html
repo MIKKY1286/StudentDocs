@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com   "></script>
 </head>
 <body class="bg-gray-100">
 
@@ -19,10 +19,15 @@
           <input type="email" id="email" placeholder="admin@example.com" class="w-full p-2 border rounded" required />
         </div>
 
-        <!-- Password Field -->
-        <div>
+        <!-- 🟩 Password Field with Toggle Button -->
+        <div class="relative">
           <label for="password" class="block text-gray-700">Password</label>
           <input type="password" id="password" placeholder="********" class="w-full p-2 border rounded" required />
+          <!-- 🟩 Eye Icon Button -->
+          <button type="button" id="togglePassword" aria-label="Toggle password visibility"
+                  class="absolute inset-y-7 right-0 pr-3 flex items-center text-sm leading-5 text-gray-600">
+            👁️
+          </button>
         </div>
 
         <!-- Submit Button -->
@@ -37,9 +42,9 @@
 
   <!-- Firebase SDK -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js   ";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js   ";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js   ";
 
     const firebaseConfig = {
       apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
@@ -100,6 +105,16 @@
           window.location.href = "./admin-dashboard.html"; // Redirect if already logged in
         }
       }
+    });
+
+    // 🟩 Password Toggle Script
+    const togglePasswordBtn = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePasswordBtn.addEventListener("click", () => {
+      const type = passwordInput.type === "password" ? "text" : "password";
+      passwordInput.type = type;
+      togglePasswordBtn.textContent = type === "password" ? "👁️" : "🙈";
     });
   </script>
 
