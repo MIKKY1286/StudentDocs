@@ -52,13 +52,13 @@
           } else {
             alert("You do not have admin access!");
             signOut(auth);
-            window.location.href = "./admin-login.html"; // Redirect to login page
+            window.location.href = "../index.html"; // Redirect to login page
           }
         } else {
           alert("No such user document!");
         }
       } else {
-        window.location.href = "./admin-login.html"; // Redirect if not logged in
+        window.location.href = "./index.html"; // Redirect if not logged in
       }
     });
 
@@ -120,7 +120,7 @@ async function fetchStudents() {
       document.getElementById("adminLogoutBtn").addEventListener("click", () => {
         signOut(auth).then(() => {
           alert("Logged out");
-          window.location.href = "./login.html";
+          window.location.href = "./index.html";
         });
       });
 
