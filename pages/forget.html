@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forgot Password - StudentDocs</title>
+  <script src="https://cdn.tailwindcss.com "></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-blue-600 mb-6 text-center">Reset Your Password</h2>
+
+    <p class="text-sm text-gray-600 mb-6 text-center">
+      Enter the email address associated with your account, and we'll send you a link to reset your password.
+    </p>
+
+    <!-- Email Input -->
+    <div class="mb-4">
+      <label for="email" class="block text-gray-700 font-medium mb-2">Email Address</label>
+      <input type="email" id="email" placeholder="you@example.com"
+             class="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+    </div>
+
+    <!-- Error Message -->
+    <p id="errorMsg" class="text-red-500 text-sm hidden mb-4">Please enter a valid email.</p>
+
+    <!-- Success Message -->
+    <p id="successMsg" class="text-green-500 text-sm hidden mb-4">Reset email sent successfully!</p>
+
+    <!-- Submit Button -->
+    <button id="resetBtn"
+            class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200">
+      Send Reset Link
+    </button>
+
+    <!-- Back to Login -->
+    <div class="mt-6 text-center">
+      <a href="./login.html" class="text-blue-600 text-sm hover:underline">Back to Login</a>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js ";
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js ";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyB43q81Zic8p_6izIlJh6JlxvHOsMGZwbI",
+      authDomain: "studentdoc-537b9.firebaseapp.com",
+      projectId: "studentdoc-537b9",
+      storageBucket: "studentdoc-537b9.firebasestorage.app",
+      messagingSenderId: "802279184125",
+      appId: "1:802279184125:web:3ca3364c78597bb2951094",
+      measurementId: "G-9XPGW51NTH"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // DOM Elements
+    const emailInput = document.getElementById("email");
+    const errorMsg = document.getElementById("errorMsg");
+    const successMsg = document.getElementById("successMsg");
+    const resetBtn = document.getElementById("resetBtn");
+
+    // Handle Reset Request
+    resetBtn.addEventListener("click", async () => {
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        errorMsg.textContent = "Please enter your email address.";
+        errorMsg.classList.remove("hidden");
+        successMsg.classList.add("hidden");
+        return;
+      }
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        successMsg.classList.remove("hidden");
+        errorMsg.classList.add("hidden");
+        emailInput.disabled = true;
+        resetBtn.disabled = true;
+        resetBtn.textContent = "Email Sent";
+      } catch (error) {
+        console.error("Error sending reset email:", error.message);
+        errorMsg.textContent = "Failed to send reset email. Please try again.";
+        errorMsg.classList.remove("hidden");
+        successMsg.classList.add("hidden");
+      }
+    });
+  </script>
+
+</body>
+</html>
